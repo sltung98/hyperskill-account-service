@@ -1,0 +1,17 @@
+# course config files
+*.yaml
+
+# gradle
+.gradle/
+build
+
+
+# idea config
+.idea
+
+# old stages
+/Account Service (Java)/*
+!/Account Service (Java)/task/
+/Account Service (Java)/task/*
+!/Account Service (Java)/task/src
+!/Account Service (Java)/task/build.gradle

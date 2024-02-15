@@ -56,19 +56,23 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             String email = parts[0];
             if (userService.existsByUsername(email)) {
                 ApplicationUser user = userService.loadUserByUsername(email);
-                if (user.isAccountNonLocked()) {
-                    if (user.getFailedAttempt() <= UserService.MAX_FAILED_ATTEMPTS - 1) {
-                        userService.increaseFailedAttempts(user);
-                        message = "Unauthorized!";
-                    } else {
-                        userService.lock(user);
-                        securityEventNameEnumList.add(SecurityEventNameEnum.BRUTE_FORCE);
-                        securityEventNameEnumList.add(SecurityEventNameEnum.LOCK_USER);
-                        message = "User account is locked";
-                    }
+                if (user.isAdmin()) {
+                    message = "Unauthorized!";
                 } else {
-                    message = "User account is locked";
-                    securityEventNameEnumList.clear();
+                    if (user.isAccountNonLocked()) {
+                        if (user.getFailedAttempt() <= UserService.MAX_FAILED_ATTEMPTS - 1) {
+                            userService.increaseFailedAttempts(user);
+                            message = "Unauthorized!";
+                        } else {
+                            userService.lock(user);
+                            securityEventNameEnumList.add(SecurityEventNameEnum.BRUTE_FORCE);
+                            securityEventNameEnumList.add(SecurityEventNameEnum.LOCK_USER);
+                            message = "User account is locked";
+                        }
+                    } else {
+                        message = "User account is locked";
+                        securityEventNameEnumList.clear();
+                    }
                 }
             }
 

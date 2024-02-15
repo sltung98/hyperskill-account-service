@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -33,8 +35,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests()
+                .requestMatchers(toH2Console())
+                .permitAll()
                 .requestMatchers("/api/auth/signup", "/actuator/shutdown",
-                        "/error", "/h2-console/**")
+                        "/error")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
